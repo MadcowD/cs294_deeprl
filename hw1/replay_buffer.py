@@ -8,7 +8,8 @@
 ############################################
 
 import numpy as np
-import lmdb
+import random
+import os
 
 class ReplayBuffer:
 	"""
@@ -18,15 +19,13 @@ class ReplayBuffer:
 		name -- The name of the replay buffer used for saving.
 		load -- Whether or not the replay buffer should reload an existing store.
 	"""
-	def __init__(self, name, load=False):
-		self.max_percepts = max_percepts
+	def __init__(self, name):
 		self.name = name
-		self.store = np.array([])
+		self.store = []
 
-		if load:
-			self.load()
-
-
+		self.save_dir = './replay/'
+		if not os.path.exists(self.save_dir):
+			os.mkdir(self.save_dir)
 
 	def put(self, percept):
 		"""
@@ -41,17 +40,18 @@ class ReplayBuffer:
 		"""
 		Gets NUM_SAMPLES samples from the replay buffer at random.
 		"""
-		return np.random.choice(self.store, num_samples)
+		return random.sample(self.store, num_samples)
 
 	def load(self):
 		"""
 		Loads the replay buffer using self.NAME.
 		"""
-		self.store = np.load('./replay/{}.npz'.format(self.name)).tolist()
+		self.store = (np.load(self.save_dir + str(self.name) + '.npz')['arr_0']).tolist()
+
 
 	def save(self):
 		"""
 		Saves the replay buffer in a compressed format.
 		"""
-		np.savez('./replay/{}.npz'.format(self.name), np.array(self.store))
+		np.savez(self.save_dir + str(self.name) + '.npz', np.array(self.store))
 

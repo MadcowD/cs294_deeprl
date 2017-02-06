@@ -23,7 +23,7 @@ def main():
     parser.add_argument('envname', type=str)
     parser.add_argument('--render', action='store_true')
     parser.add_argument("--max_timesteps", type=int)
-    parser.add_argument('--num_rollouts', type=int, default=20,
+    parser.add_argument('--num_rollouts', type=int, default=2,
                         help='Number of expert roll outs')
     args = parser.parse_args()
 
