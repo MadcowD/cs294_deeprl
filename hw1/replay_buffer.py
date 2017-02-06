@@ -34,6 +34,9 @@ class ReplayBuffer:
 		"""
 		self.store += [percept]
 
+	def size(self):
+		return len(self.store)
+
 	def get(self, num_samples):
 		"""
 		Gets NUM_SAMPLES samples from the replay buffer at random.
