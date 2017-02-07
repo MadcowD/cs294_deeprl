@@ -103,10 +103,12 @@ def main():
                 done = False
                 steps = 0
                 while not done:
-                    action = policy_fn(obs[None,:])
+
+                    act = trained_clone.act(obs)
+                    expert_action = policy_fn(obs[None,:])
 
 
-                    loss = bclone.perceive(obs, action[0])
+                    loss = bclone.perceive(obs, expert_action[0])
 
                     obs, r, done, _ = env.step(action)
                     steps += 1
