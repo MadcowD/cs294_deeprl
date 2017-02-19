@@ -37,11 +37,10 @@ def test(env, max_steps, trained_clone):
             totalr += r
 
             if done:
-                continue
+                break
         returns += [totalr]
         print("iter {}: {}".format(episode, totalr))
 
-    print('returns', returns)
     print('mean return', np.mean(returns))
     print('std of return', np.std(returns))
 

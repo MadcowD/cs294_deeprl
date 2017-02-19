@@ -37,11 +37,10 @@ def test(env, max_steps, trained_clone):
             totalr += r
 
             if done:
-                continue
+                break
         returns += [totalr]
-        print("iter {}: {}".format(episode, totalr))
+        #print("test {}: {}".format(episode, totalr))
 
-    print('returns', returns)
     print('mean return', np.mean(returns))
     print('std of return', np.std(returns))
 
@@ -88,40 +87,45 @@ def main():
             list(env.observation_space.shape),
             list(env.action_space.shape), sess, name, load=resume)
         print('clone ready.')
-
+        ticks = 0
+        epi = 0
         if args.test:
             test(env, max_steps, bclone)
         else:
-            for i in range(num_rollouts):
-                if i % 5 == 0 and i > 0:
-                    print('saving model.')
-                    bclone.save()
-                    print('model saved.')
+            while ticks < num_rollouts*max_steps:
+                epi +=1
+               
 
-                print('iter', i)
                 obs = env.reset()
                 done = False
                 steps = 0
                 while not done:
-
-                    act = trained_clone.act(obs)
+                    act = bclone.act(obs)
                     expert_action = policy_fn(obs[None,:])
 
-
+                    ticks += 1
                     loss = bclone.perceive(obs, expert_action[0])
 
-                    obs, r, done, _ = env.step(action)
-                    steps += 1
+                    obs, r, done, _ = env.step(act)
 
+
+                    if int(ticks) % 5000 == 0 and ticks > 0:
+                        print(ticks, ticks % 5*max_steps)
+                        print('saving model.')
+                        bclone.save()
+                        test(env, max_steps, bclone)
+
+                        print('model saved.')
+                    
                     if args.render:
                         env.render()
-                    if steps % 100 == 0:
-                        print("{}\t {}".format(steps+i*max_steps, loss))
+                    if ticks % 100 == 0:
+                        print("error: {}\t {}".format(ticks, loss))
                     if steps >= max_steps:
                         break
 
-            test(env, max_steps, bclone)
 
+        test(env, max_steps, bclone)
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,5 @@
+alg,task,error,avgr,stdr
+Behavioral Cloning,Ant-v1,0.0003166649,4692.75305153,112.517654818
+Expert,Ant-v1,--,4809.58391948,86.3039673066
+Behavioral Cloning,Humanoid-v1,0.0588080287,474.056683013,200.906773452
+Expert,Humanoid-v1,--,10401.0822864,52.0859149171
